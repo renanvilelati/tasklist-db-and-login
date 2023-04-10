@@ -14,13 +14,15 @@ import {
     orderBy,
     where,
     doc,
-    deleteDoc
+    deleteDoc,
+    updateDoc
 } from 'firebase/firestore'
 
 export const Admin = () => {
 
     const [tarefaInput, setTarefaInput] = useState('')
     const [user, setUser] = useState({})
+    const [editTask, setEditTask] = useState({})
 
     const [tarefas, setTarefas] = useState([])
 
@@ -63,6 +65,11 @@ export const Admin = () => {
             return
         }
 
+        if (editTask?.id) {
+            handleUpdateTask()
+            return
+        }
+
         await addDoc(collection(db, 'tarefas'), {
             tarefa: tarefaInput,
             created: new Date(),
@@ -85,6 +92,28 @@ export const Admin = () => {
         await deleteDoc(docRef)
     }
 
+    function handleEditTask(item) {
+        setTarefaInput(item.tarefa)
+        setEditTask(item)
+    }
+
+    async function handleUpdateTask() {
+        const docRef = doc(db, 'tarefas', editTask?.id)
+        await updateDoc(docRef, {
+            tarefa: tarefaInput
+        })
+            .then(() => {
+                alert('TAREFA ATUALIZADA')
+                setTarefaInput('')
+                setEditTask({})
+            })
+            .catch(error => {
+                console.error('ERRO AO TENTAR ATUALIZAR A TAREFA');
+                setTarefaInput('')
+                setEditTask({})
+            })
+    }
+
     return (
         <AdminContainer>
             <h1>My tasks</h1>
@@ -96,7 +125,12 @@ export const Admin = () => {
                     onChange={e => setTarefaInput(e.target.value)}
                 />
 
-                <button>Add task</button>
+                {Object.keys(editTask).length > 0 ? (
+                    <button className='edit' >Atualizar tarefa</button>
+                ) : (
+                    <button >Registrar tarefa</button>
+                )
+                }
             </Form>
 
             {
@@ -106,7 +140,7 @@ export const Admin = () => {
                             {item.tarefa}
                         </p>
                         <div>
-                            <button>Edit</button>
+                            <button onClick={() => handleEditTask(item)}>Edit</button>
                             <button onClick={() => handleDeleteTask(item.id)} className="btn-delete">Delete</button>
                         </div>
                     </article>

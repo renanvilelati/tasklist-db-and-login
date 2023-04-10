@@ -115,6 +115,10 @@ button{
   font-size: 18px;
 }
 
+button.edit {
+  background-color: #437e2a;
+}
+
 textarea{
   margin-bottom: 12px;
   border:0;
