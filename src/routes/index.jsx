@@ -5,6 +5,7 @@ import { Home } from "../pages/Home"
 import { Admin } from "../pages/Admin"
 import { Register } from "../pages/Register"
 import { ErrorPage } from "../pages/ErrorPage"
+import { Private } from "./Private"
 
 export const RouterApp = () => {
     return (
@@ -12,7 +13,11 @@ export const RouterApp = () => {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
 
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={
+                <Private>
+                    <Admin />
+                </Private>}
+            />
 
             <Route path="*" element={<ErrorPage />} />
         </Routes>
