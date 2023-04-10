@@ -44,7 +44,6 @@ export const Admin = () => {
                         })
                     })
 
-                    console.log(lista);
                     setTarefas(lista)
                 })
 
@@ -68,7 +67,6 @@ export const Admin = () => {
             userUid: user?.uid
         })
             .then(() => {
-                alert('TAREFA REGISTRADA');
                 setTarefaInput('')
             })
             .catch(error => {
@@ -94,15 +92,19 @@ export const Admin = () => {
                 <button>Add task</button>
             </Form>
 
-            <article className="list">
-                <p>
-                    Estudar react hoje a noite
-                </p>
-                <div>
-                    <button>Edit</button>
-                    <button className="btn-delete">Delete</button>
-                </div>
-            </article>
+            {
+                tarefas.map(item => (
+                    <article key={item.id} className="list">
+                        <p>
+                            {item.tarefa}
+                        </p>
+                        <div>
+                            <button>Edit</button>
+                            <button className="btn-delete">Delete</button>
+                        </div>
+                    </article>
+                ))
+            }
 
             <button className="btn-logout" onClick={handleLogout}>Log out</button>
         </AdminContainer>
