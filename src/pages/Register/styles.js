@@ -31,6 +31,10 @@ a.register-link {
     margin: 14px 0;
     font-size: 14px;
 
+    &:hover {
+      text-decoration: underline;
+    }
+
     span {
         color: #3366ff;
     }
