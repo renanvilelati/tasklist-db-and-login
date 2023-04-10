@@ -6,18 +6,49 @@ import { useState, useEffect } from "react";
 import { AdminContainer, Form } from "./styles";
 
 // Criando collection
-import { addDoc, collection } from 'firebase/firestore'
+import {
+    addDoc,
+    collection,
+    onSnapshot,
+    query,
+    orderBy,
+    where
+} from 'firebase/firestore'
 
 export const Admin = () => {
 
     const [tarefaInput, setTarefaInput] = useState('')
     const [user, setUser] = useState({})
 
+    const [tarefas, setTarefas] = useState([])
+
     useEffect(() => {
 
         async function loadTaks() {
             const userDetails = localStorage.getItem('@userDetails')
             setUser(JSON.parse(userDetails))
+
+            if (userDetails) {
+                const data = JSON.parse(userDetails)
+
+                const tarefaRef = collection(db, 'tarefas')
+                const q = query(tarefaRef, orderBy('created', 'desc'), where('userUid', '==', data?.uid))
+                const unsub = onSnapshot(q, (snapshot) => {
+                    let lista = []
+
+                    snapshot.forEach((doc) => {
+                        lista.push({
+                            id: doc.id,
+                            tarefa: doc.data().tarefa,
+                            userUid: doc.data().userUid
+                        })
+                    })
+
+                    console.log(lista);
+                    setTarefas(lista)
+                })
+
+            }
         }
 
         loadTaks()
