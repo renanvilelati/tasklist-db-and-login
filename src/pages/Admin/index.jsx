@@ -12,7 +12,9 @@ import {
     onSnapshot,
     query,
     orderBy,
-    where
+    where,
+    doc,
+    deleteDoc
 } from 'firebase/firestore'
 
 export const Admin = () => {
@@ -78,6 +80,11 @@ export const Admin = () => {
         await signOut(auth)
     }
 
+    async function handleDeleteTask(id) {
+        const docRef = doc(db, 'tarefas', id)
+        await deleteDoc(docRef)
+    }
+
     return (
         <AdminContainer>
             <h1>My tasks</h1>
@@ -100,7 +107,7 @@ export const Admin = () => {
                         </p>
                         <div>
                             <button>Edit</button>
-                            <button className="btn-delete">Delete</button>
+                            <button onClick={() => handleDeleteTask(item.id)} className="btn-delete">Delete</button>
                         </div>
                     </article>
                 ))
