@@ -119,7 +119,7 @@ export const Admin = () => {
 
   return (
     <AdminContainer>
-      <h1>My tasks</h1>
+      <h1>My tasks 📘</h1>
 
       <Form onSubmit={handleRegister}>
         <textarea
