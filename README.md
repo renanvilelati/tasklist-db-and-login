@@ -7,21 +7,21 @@
 
 [Tasklist](https://tasklist-renanvilelati.netlify.app/)
 
-# Indice
+# Summary
 
 - [Sobre](#-sobre)
 - [Tecnologias Utilizadas](#-tecnologias-utilizadas)
 - [Como baixar o projeto](#-como-baixar-o-projeto)
 
-## 🔖&nbsp; Sobre
+## 🔖&nbsp; About
 
-O projeto consiste em uma lista de tarefas, na qual o usuário precisa fazer cadastro para cadastrar as tarefas. Também é possível, alterar e excluir as tarefas.
+The project consists of a list of tasks, in which the user needs to register to register the tasks. It is also possible to change and delete tasks.
 
-**Funcionalidades**:
+**Functionalities**:
 
-- Sistema de login
-- Sistema de autenticação
-- Banco de dados (Cadastro, alteração e exclusão)
+- Log in system
+- Authenticate system
+- Database (Complete CRUD)
 
 ---
 
@@ -32,9 +32,7 @@ O projeto consiste em uma lista de tarefas, na qual o usuário precisa fazer cad
 
 ---
 
-## 🚀 Tecnologias utilizadas
-
-O projeto foi desenvolvido utilizando as seguintes tecnologias
+## 🚀 Technologies used
 
 - [ReactJS](https://reactjs.org)
 - [Styled Components](https://styled-components.com/)
@@ -44,20 +42,20 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias
 
 ---
 
-## 🗂 Como baixar o projeto
+## 🗂 How to download
 
 ```bash
 
-    # Clonar o repositório
+    # Clone the repository
     $ git clone https://github.com/renanvilelati/tasklist-db-and-login
 
-    # Instalar as dependências
+    # Install the dependencies
     $ npm install
 
-    # Iniciar o projeto
+    # Started the project
     $ npm run dev
 ```
 
 ---
 
-Desenvolvido 🐻 por Renan Vilela
+Developed 🐻 by Renan Vilela
