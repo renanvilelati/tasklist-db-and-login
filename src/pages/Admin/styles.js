@@ -74,7 +74,6 @@ export const AdminContainer = styled.div`
     padding: 0.5rem 2rem;
     border-radius: 4px;
     border: 0;
-    font-weight: bold;
     background-color: #5c5c5cfa;
     color: #fafafa;
     transition: all 0.5s;
