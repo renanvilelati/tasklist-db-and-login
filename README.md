@@ -28,6 +28,7 @@ O projeto consiste em uma lista de tarefas, na qual o usuário precisa fazer cad
 ## Next Updates
 
 - Create 'Forgot password' section
+- Create Tests
 
 ---
 
