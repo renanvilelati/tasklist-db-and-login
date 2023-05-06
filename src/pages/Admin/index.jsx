@@ -1,153 +1,158 @@
-import { auth, db } from '../../firebaseConnection'
+import { auth, db } from '../../firebaseConnection';
 import { signOut } from 'firebase/auth';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { AdminContainer, Form } from "./styles";
+import { AdminContainer, Form } from './styles';
 
 // Criando collection
 import {
-    addDoc,
-    collection,
-    onSnapshot,
-    query,
-    orderBy,
-    where,
-    doc,
-    deleteDoc,
-    updateDoc
-} from 'firebase/firestore'
+  addDoc,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  where,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 export const Admin = () => {
+  const [tarefaInput, setTarefaInput] = useState('');
+  const [user, setUser] = useState({});
+  const [editTask, setEditTask] = useState({});
 
-    const [tarefaInput, setTarefaInput] = useState('')
-    const [user, setUser] = useState({})
-    const [editTask, setEditTask] = useState({})
+  const [tarefas, setTarefas] = useState([]);
 
-    const [tarefas, setTarefas] = useState([])
+  useEffect(() => {
+    async function loadTaks() {
+      const userDetails = localStorage.getItem('@userDetails');
+      setUser(JSON.parse(userDetails));
 
-    useEffect(() => {
+      if (userDetails) {
+        const data = JSON.parse(userDetails);
 
-        async function loadTaks() {
-            const userDetails = localStorage.getItem('@userDetails')
-            setUser(JSON.parse(userDetails))
+        const tarefaRef = collection(db, 'tarefas');
+        const q = query(
+          tarefaRef,
+          orderBy('created', 'desc'),
+          where('userUid', '==', data?.uid)
+        );
+        const unsub = onSnapshot(q, (snapshot) => {
+          let lista = [];
 
-            if (userDetails) {
-                const data = JSON.parse(userDetails)
+          snapshot.forEach((doc) => {
+            lista.push({
+              id: doc.id,
+              tarefa: doc.data().tarefa,
+              userUid: doc.data().userUid,
+            });
+          });
 
-                const tarefaRef = collection(db, 'tarefas')
-                const q = query(tarefaRef, orderBy('created', 'desc'), where('userUid', '==', data?.uid))
-                const unsub = onSnapshot(q, (snapshot) => {
-                    let lista = []
-
-                    snapshot.forEach((doc) => {
-                        lista.push({
-                            id: doc.id,
-                            tarefa: doc.data().tarefa,
-                            userUid: doc.data().userUid
-                        })
-                    })
-
-                    setTarefas(lista)
-                })
-
-            }
-        }
-
-        loadTaks()
-    }, [])
-
-    async function handleRegister(e) {
-        e.preventDefault()
-
-        if (tarefaInput.trim() === '') {
-            alert('Digite alguma tarefa')
-            return
-        }
-
-        if (editTask?.id) {
-            handleUpdateTask()
-            return
-        }
-
-        await addDoc(collection(db, 'tarefas'), {
-            tarefa: tarefaInput,
-            created: new Date(),
-            userUid: user?.uid
-        })
-            .then(() => {
-                setTarefaInput('')
-            })
-            .catch(error => {
-                console.error('ERRO AO REGISTRAR' + error);
-            })
+          setTarefas(lista);
+        });
+      }
     }
 
-    async function handleLogout() {
-        await signOut(auth)
+    loadTaks();
+  }, []);
+
+  async function handleRegister(e) {
+    e.preventDefault();
+
+    if (tarefaInput.trim() === '') {
+      toast.warning('Enter your task');
+      return;
     }
 
-    async function handleDeleteTask(id) {
-        const docRef = doc(db, 'tarefas', id)
-        await deleteDoc(docRef)
+    if (editTask?.id) {
+      handleUpdateTask();
+      return;
     }
 
-    function handleEditTask(item) {
-        setTarefaInput(item.tarefa)
-        setEditTask(item)
-    }
+    await addDoc(collection(db, 'tarefas'), {
+      tarefa: tarefaInput,
+      created: new Date(),
+      userUid: user?.uid,
+    })
+      .then(() => {
+        setTarefaInput('');
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Unable to create task');
+      });
+  }
 
-    async function handleUpdateTask() {
-        const docRef = doc(db, 'tarefas', editTask?.id)
-        await updateDoc(docRef, {
-            tarefa: tarefaInput
-        })
-            .then(() => {
-                alert('TAREFA ATUALIZADA')
-                setTarefaInput('')
-                setEditTask({})
-            })
-            .catch(error => {
-                console.error('ERRO AO TENTAR ATUALIZAR A TAREFA');
-                setTarefaInput('')
-                setEditTask({})
-            })
-    }
+  async function handleLogout() {
+    await signOut(auth);
+  }
 
-    return (
-        <AdminContainer>
-            <h1>My tasks</h1>
+  async function handleDeleteTask(id) {
+    const docRef = doc(db, 'tarefas', id);
+    await deleteDoc(docRef);
+  }
 
-            <Form onSubmit={handleRegister}>
-                <textarea
-                    placeholder="Digite sua tarefa"
-                    value={tarefaInput}
-                    onChange={e => setTarefaInput(e.target.value)}
-                />
+  function handleEditTask(item) {
+    setTarefaInput(item.tarefa);
+    setEditTask(item);
+  }
 
-                {Object.keys(editTask).length > 0 ? (
-                    <button className='edit' >Atualizar tarefa</button>
-                ) : (
-                    <button >Registrar tarefa</button>
-                )
-                }
-            </Form>
+  async function handleUpdateTask() {
+    const docRef = doc(db, 'tarefas', editTask?.id);
+    await updateDoc(docRef, {
+      tarefa: tarefaInput,
+    })
+      .then(() => {
+        toast.success('Task updated');
+        setTarefaInput('');
+        setEditTask({});
+      })
+      .catch((error) => {
+        toast.error('Unable to update task');
+        setTarefaInput('');
+        setEditTask({});
+      });
+  }
 
-            {
-                tarefas.map(item => (
-                    <article key={item.id} className="list">
-                        <p>
-                            {item.tarefa}
-                        </p>
-                        <div>
-                            <button onClick={() => handleEditTask(item)}>Edit</button>
-                            <button onClick={() => handleDeleteTask(item.id)} className="btn-delete">Delete</button>
-                        </div>
-                    </article>
-                ))
-            }
+  return (
+    <AdminContainer>
+      <h1>My tasks</h1>
 
-            <button className="btn-logout" onClick={handleLogout}>Log out</button>
-        </AdminContainer>
-    )
-}
+      <Form onSubmit={handleRegister}>
+        <textarea
+          placeholder='Enter your task'
+          value={tarefaInput}
+          onChange={(e) => setTarefaInput(e.target.value)}
+        />
+
+        {Object.keys(editTask).length > 0 ? (
+          <button className='edit'>Update Task</button>
+        ) : (
+          <button>Create task</button>
+        )}
+      </Form>
+
+      {tarefas.map((item) => (
+        <article key={item.id} className='list'>
+          <p>{item.tarefa}</p>
+          <div>
+            <button onClick={() => handleEditTask(item)}>Edit</button>
+            <button
+              onClick={() => handleDeleteTask(item.id)}
+              className='btn-delete'
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+      ))}
+
+      <button className='btn-logout' onClick={handleLogout}>
+        Log out
+      </button>
+    </AdminContainer>
+  );
+};
