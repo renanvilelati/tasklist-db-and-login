@@ -44,11 +44,12 @@ export const AdminContainer = styled.div`
     max-width: 600px;
     display: flex;
     flex-direction: column;
-    background-color: rgba(20, 20, 20, 0.5);
+    background-color: #262d40;
     border-radius: 4px;
     margin-bottom: 12px;
+    margin-top: 1rem;
     justify-content: center;
-    padding: 14px 0;
+    padding: 1rem;
   }
 
   .list p {
@@ -59,11 +60,21 @@ export const AdminContainer = styled.div`
     margin-right: 8px;
     border: 0;
     border-radius: 4px;
-    padding: 4px;
+    padding: 0.5rem 2rem;
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+
+  .list .btn-edit {
+    color: #fff;
+    background-color: #3366ff;
   }
 
   .btn-delete {
-    color: #ffcc23;
+    color: #3366ff;
+    outline: 1px solid #3366ff;
     background-color: transparent;
   }
 
@@ -77,6 +88,9 @@ export const AdminContainer = styled.div`
     background-color: #5c5c5cfa;
     color: #fafafa;
     transition: all 0.5s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .btn-logout:hover {
