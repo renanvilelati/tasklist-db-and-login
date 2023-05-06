@@ -3,6 +3,8 @@ import { signOut } from 'firebase/auth';
 
 import { useState, useEffect } from 'react';
 
+import { SignOut } from 'phosphor-react';
+
 import { AdminContainer, Form } from './styles';
 
 // Criando collection
@@ -131,7 +133,7 @@ export const Admin = () => {
         {Object.keys(editTask).length > 0 ? (
           <button className='edit'>Update Task</button>
         ) : (
-          <button>Create task</button>
+          <button> Create task </button>
         )}
       </Form>
 
@@ -139,19 +141,21 @@ export const Admin = () => {
         <article key={item.id} className='list'>
           <p>{item.tarefa}</p>
           <div>
-            <button onClick={() => handleEditTask(item)}>Edit</button>
             <button
               onClick={() => handleDeleteTask(item.id)}
               className='btn-delete'
             >
               Delete
             </button>
+            <button className='btn-edit' onClick={() => handleEditTask(item)}>
+              Edit
+            </button>
           </div>
         </article>
       ))}
 
       <button className='btn-logout' onClick={handleLogout}>
-        Log out
+        <SignOut size={20} /> Log out
       </button>
     </AdminContainer>
   );
